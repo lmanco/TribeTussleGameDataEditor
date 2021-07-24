@@ -38,6 +38,9 @@
     <Content Include="src\components\LogoutLink.vue">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\components\NavBar.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\components\ResendVerificationEmail.vue">
       <SubType>Code</SubType>
     </Content>
@@ -51,6 +54,12 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\views\ActivateAccount.vue">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\views\CreateGameData.vue">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\views\EditGameData.vue">
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\views\Home.vue" />
@@ -99,6 +108,9 @@
     <TypeScriptCompile Include="src\router\index.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\services\API\GameDataService.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\services\API\LoginService.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -106,6 +118,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\services\API\types\APIResponses.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\services\API\types\GameData.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\services\API\UserService.ts">

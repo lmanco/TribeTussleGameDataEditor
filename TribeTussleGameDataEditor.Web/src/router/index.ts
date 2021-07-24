@@ -4,6 +4,8 @@ import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
 import ActivateAccount from '../views/ActivateAccount.vue'
 import ResetPassword from '../views/ResetPassword.vue'
+import CreateGameData from '../views/CreateGameData.vue'
+import EditGameData from '../views/EditGameData.vue'
 import NotFound from '../views/NotFound.vue'
 
 Vue.use(VueRouter)
@@ -31,6 +33,16 @@ const routes = [
         name: 'ResetPassword',
         component: ResetPassword,
         props: (route: any) => route.params
+    },
+    {
+        path: '/create-game-data',
+        name: 'CreateGameData',
+        component: CreateGameData
+    },
+    {
+        path: '/edit-game-data/:name',
+        name: 'EditGameData',
+        component: EditGameData
     },
     {
         path: '*',
