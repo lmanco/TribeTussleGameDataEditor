@@ -61,12 +61,17 @@ namespace TribeTussleGameDataEditor
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IVerificationTokenRepository, VerificationTokenRepository>();
             services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+            services.AddScoped<IGameDataRepository, GameDataRepository>();
             services.AddScoped<IResponseObjectFactory, ResponseObjectFactory>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IDALInit, DALInit>();
             services.AddSingleton(AutoMapperConfig.GetConfig().CreateMapper());
             services.AddSingleton<ISmtpClientFactory, SmtpClientFactory>();
             services.AddSingleton<IMailer, Mailer>();
+            services.AddSingleton<IFileReader, FileReader>();
+            services.AddSingleton<IFileWriter, FileWriter>();
+            services.AddSingleton<IYAMLReader<GameDataData>, YAMLReader<GameDataData>>();
+            services.AddSingleton<IYAMLWriter<GameDataData>, YAMLWriter<GameDataData>>();
 
             services.AddSwaggerGen(c =>
             {

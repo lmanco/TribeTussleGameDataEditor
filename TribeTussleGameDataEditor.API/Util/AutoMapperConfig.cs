@@ -11,6 +11,7 @@ namespace TribeTussleGameDataEditor.API.Util
             {
                 config.CreateMap<UserRequestDTO, User>();
                 config.CreateMap<User, UserResponseDTO>();
+                config.CreateMap<GameDataRequestDTO, GameData>();
             });
         }
     }
