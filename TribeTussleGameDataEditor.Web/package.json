@@ -15,7 +15,8 @@
     "vue": "2.6.11",
     "vue-class-component": "6.0.0",
     "vue-property-decorator": "7.0.0",
-    "vue-router": "3.2.0"
+    "vue-router": "3.2.0",
+    "vuedraggable": "2.24.3"
   },
   "devDependencies": {
     "@types/core-js": "2.5.4",
