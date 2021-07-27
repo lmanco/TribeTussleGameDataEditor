@@ -7,7 +7,8 @@
                         <b-form-group id="form-group-game-data-name"
                                       label="Name:"
                                       label-size="lg"
-                                      label-cols="1"
+                                      :label-cols="isMobile ? 3 : 1"
+                                      :class="{ 'pl-3': isMobile }"
                                       label-for="round-form-input-prompt">
                             <b-form-input id="form-input-game-data-name"
                                           v-model="gameDataName"
@@ -25,12 +26,12 @@
                     </b-col>
                     <b-col cols="8" class="pl-2">
                         <div class="border">
-                            <div class="m-3">
+                            <div :class="{ 'm-3': true, 'text-center': isMobile }">
                                 <h5>Round 1</h5>
                                 <b-form-group id="form-group-prompt"
-                                              label="Prompt:"
-                                              label-cols="1"
-                                              class="ml-1"
+                                              :label="isMobile ? '' : 'Prompt:'"
+                                              :label-cols="isMobile ? 0 : 1"
+                                              :class="{ 'ml-1': !isMobile }"
                                               label-for="form-input-prompt">
                                     <b-form-input id="form-input-prompt"
                                                   v-model="prompt"

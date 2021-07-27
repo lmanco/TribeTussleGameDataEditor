@@ -4,7 +4,10 @@
         @mouseover="toggleHover()" @mouseout="toggleHover()" @click="setActiveRound()">
         <div>
             <b-row>
-                <b-col>
+                <b-col v-if="isMobile">
+                    {{ isFastMoney ? 'FM' : index }}
+                </b-col>
+                <b-col v-else>
                     {{ isFastMoney ? 'Fast Money' : index }}: {{round.prompt}}
                 </b-col>
                 <b-col class="text-right col-sm-auto">

@@ -1,9 +1,9 @@
 <template>
     <div class="border">
-        <div class="m-3">
+        <div :class="{ 'm-3': true, 'text-center': isMobile }">
             <h5>Round</h5>
             <b-button class="mb-2" variant="primary">
-                <b-icon-plus></b-icon-plus>Add Round
+                <b-icon-plus></b-icon-plus>{{ isMobile ? '' : 'Add Round' }}
             </b-button>
             <draggable v-model="rounds" handle=".drag-handle" :move="roundMoved">
                 <transition-group>
