@@ -2,7 +2,7 @@
     <div v-if="authenticated">
         <nav-bar :username="authenticatedUser.username" />
         <game-editor-form initGameDataName="Test"
-                          :rounds="[{ prompt: 'Foo', id: 1 }, { prompt: 'Bar', id: 2 }, { prompt: 'Baz', id: 3 }, { prompt: 'Last', id: 4 }]"/>
+                          :rounds="[{ prompt: '', id: 1 }, { prompt: '', id: 2 }]"/>
     </div>
 </template>
 
