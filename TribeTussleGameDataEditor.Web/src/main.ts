@@ -12,7 +12,7 @@ Vue.use(BootstrapVueIcons);
 Vue.use(VueMq, {
     breakpoints: {
         mobile: 450,
-        tablet: 900,
+        tablet: 950,
         laptop: 1250,
         desktop: Infinity
     }

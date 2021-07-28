@@ -75,6 +75,15 @@
             ];
             this.activeRoundIndex = this.rounds.length - 2;
             this.setActiveRound(nextRoundId, this.activeRoundIndex);
+            (this.$parent as any).currentNumRounds = this.rounds.length; // yikes...
+        }
+
+        public deleteRound(roundId: number): void {
+            this.rounds = this.rounds.filter(round => round.id != roundId);
+            if (this.activeRoundIndex > this.rounds.length - 2)
+                this.activeRoundIndex--;
+            this.setActiveRound(this.rounds[this.activeRoundIndex].id, this.activeRoundIndex);
+            (this.$parent as any).currentNumRounds = this.rounds.length; // yikes...
         }
 
         private getRoundTitle(index: number): string {

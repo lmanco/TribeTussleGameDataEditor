@@ -22,14 +22,14 @@
                 </b-row>
                 <b-row class="mt-3 mb-3 pl-2">
                     <b-col cols="4" class="pl-2 pr-1">
-                        <round-list :initRounds="rounds" :updateActiveRound="updateActiveRound" />
+                        <round-list :initRounds="rounds" :updateActiveRound="updateActiveRound" ref="round-list" />
                     </b-col>
                     <b-col cols="8" class="pl-2">
-                        <round-form :round="activeRound ? activeRound : rounds[0]" :roundTitle="roundTitle" />
+                        <round-form :round="activeRound ? activeRound : rounds[0]" :roundTitle="roundTitle" :deleteRound="deleteRound" :currentNumRounds="currentNumRounds" />
                     </b-col>
                 </b-row>
                 <b-row class="mb-2">
-                    <b-col class="text-right">
+                    <b-col :class="{ 'text-right': !isMobile, 'text-center': isMobile }">
                         <b-button variant="danger" class="mr-2 pl-4 pr-4">Delete</b-button>
                         <b-button variant="secondary" class="mr-2 pl-4 pr-4">Export</b-button>
                         <b-button variant="primary" class="pl-4 pr-4">Save</b-button>
@@ -59,6 +59,7 @@
         private gameDataName: string = '';
         private activeRound!: Round;
         private roundTitle: string;
+        private currentNumRounds: number = 2;
 
         public constructor() {
             super();
@@ -74,6 +75,10 @@
         public updateActiveRound(round: Round, title: string): void {
             this.activeRound = round;
             this.roundTitle = title;
+        }
+
+        public deleteRound(roundId: number): void {
+            (this.$refs['round-list'] as any).deleteRound(roundId);
         }
     }
 </script>

@@ -3,12 +3,12 @@
         'text-white': activeHover || active }" :id="`round-list-item-${round.id}`"
         @mouseover="toggleHover()" @mouseout="toggleHover()" @click="setActiveRound()">
         <div>
-            <b-tooltip :target="`round-list-item-${round.id}`" triggers="hover" :delay="{ show: 1000 }" v-if="!isMobile && round.prompt">
+            <b-tooltip :target="`round-list-item-${round.id}`" triggers="hover" :delay="{ show: 1000 }" v-if="mqOrdinal >= mqOrdinals.laptop && round.prompt">
                 {{ round.prompt }}
             </b-tooltip>
             <b-row>
                 <b-col v-if="isMobile">
-                    {{ isFastMoney ? 'FM' : index }}
+                    {{ isFastMoney ? 'FM' : index + 1 }}
                 </b-col>
                 <b-col v-else class="text-truncate">
                     {{ isFastMoney ? 'Fast Money' : index + 1 }}{{round.prompt ? ':' : '' }} {{round.prompt}}
