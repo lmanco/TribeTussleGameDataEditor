@@ -3,18 +3,22 @@
         'text-white': activeHover || active }" :id="`round-list-item-${round.id}`"
         @mouseover="toggleHover()" @mouseout="toggleHover()" @click="setActiveRound()">
         <div>
-            <b-tooltip :target="`round-list-item-${round.id}`" triggers="hover" :delay="{ show: 1000 }" v-if="mqOrdinal >= mqOrdinals.laptop && round.prompt">
+            <b-tooltip :target="`round-list-item-${round.id}`" triggers="hover" :delay="{ show: 1000 }" v-if="mqOrdinal > mqOrdinals.tablet && round.prompt">
                 {{ round.prompt }}
             </b-tooltip>
-            <b-row>
-                <b-col v-if="isMobile">
-                    {{ isFastMoney ? 'FM' : index + 1 }}
+            <b-row v-if="!isMobile">
+                <b-col class="col-sm-auto pr-0">
+                    <div class="drag-handle" v-if="!isFastMoney">
+                        <b-icon-grip-horizontal></b-icon-grip-horizontal>
+                    </div>
                 </b-col>
-                <b-col v-else class="text-truncate">
+                <b-col :class="{ 'text-truncate': true, 'ml-3': isFastMoney }">
                     {{ isFastMoney ? 'Fast Money' : index + 1 }}{{round.prompt ? ':' : '' }} {{round.prompt}}
                 </b-col>
-                <b-col :class="{ 'text-center': mqOrdinal <= mqOrdinals.tablet, 'text-right': mqOrdinal >= mqOrdinals.laptop,
-                       'col-sm-auto': true }">
+            </b-row>
+            <b-row v-else>
+                <b-col v-if="isMobile" class="text-center col-sm-auto">
+                    {{ isFastMoney ? 'FM' : index + 1 }}
                     <div class="drag-handle" v-if="!isFastMoney">
                         <b-icon-grip-horizontal></b-icon-grip-horizontal>
                     </div>

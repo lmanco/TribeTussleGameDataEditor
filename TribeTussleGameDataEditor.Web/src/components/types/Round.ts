@@ -1,4 +1,4 @@
-import Answer from './Answer.vue';
+import Answer from './Answer';
 
 export default interface Round {
     id: number,

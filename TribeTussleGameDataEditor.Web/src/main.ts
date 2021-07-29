@@ -11,8 +11,9 @@ Vue.use(BootstrapVueIcons);
 
 Vue.use(VueMq, {
     breakpoints: {
-        mobile: 450,
-        tablet: 950,
+        mobile: 576,
+        tablet: 900,
+        notebook: 1180,
         laptop: 1250,
         desktop: Infinity
     }
@@ -25,8 +26,9 @@ Vue.mixin({
                 return {
                     mobile: 0,
                     tablet: 1,
-                    laptop: 2,
-                    desktop: 3
+                    notebook: 2,
+                    laptop: 3,
+                    desktop: 4
                 }
             }
         }
@@ -37,6 +39,12 @@ Vue.mixin({
         },
         isTablet: function () {
             return this.mqOrdinal === (this.mqOrdinals as any).tablet;
+        },
+        isNotebook: function () {
+            return this.mqOrdinal === (this.mqOrdinals as any).notebook;
+        },
+        isLaptop: function () {
+            return this.mqOrdinal === (this.mqOrdinals as any).laptop;
         },
         isDesktop: function () {
             return this.mqOrdinal === (this.mqOrdinals as any).desktop;

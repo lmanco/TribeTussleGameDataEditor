@@ -1,7 +1,7 @@
 <template>
     <div class="border">
         <div :class="{ 'm-3': true, 'text-center': isMobile }">
-            <h5>Round</h5>
+            <h5 style="cursor: default;">Round</h5>
             <b-button class="mb-2 w-100" variant="primary" @click="addRound">
                 <b-icon-plus></b-icon-plus>{{ isMobile ? '' : 'Add Round' }}
             </b-button>
@@ -70,7 +70,7 @@
             const nextRoundId: number = Math.max(...this.rounds.map((round: Round) => round.id)) + 1;
             this.rounds = [
                 ...this.rounds.slice(0, this.rounds.length - 1),
-                { id: nextRoundId, prompt: '', answers: [], active: true },
+                { id: nextRoundId, prompt: '', answers: [{ id: 1, text: '', value: 0 }], active: true },
                 this.rounds[this.rounds.length - 1]
             ];
             this.activeRoundIndex = this.rounds.length - 2;

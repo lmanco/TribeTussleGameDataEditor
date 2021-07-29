@@ -1,5 +1,5 @@
-export default interface {
+export default interface Answer {
     id: number,
     text: string,
-    score: number
+    value: number
 }

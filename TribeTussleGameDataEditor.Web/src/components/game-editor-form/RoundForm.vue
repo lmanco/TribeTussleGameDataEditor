@@ -1,38 +1,40 @@
 <template>
     <div class="border">
         <div :class="{ 'm-3': true, 'text-center': isMobile }">
-            <h5>{{ roundTitle }}</h5>
-            <div v-if="mqOrdinal >= mqOrdinals.laptop">
-                <b-row class="mb-2">
-                    <b-col :cols="isFastMoneyRound? 12 : 9">
-                        <b-form-group id="form-group-prompt"
-                                      label="Prompt:"
-                                      :label-cols="isDesktop ? 1 : 2"
-                                      class="ml-1"
-                                      label-for="form-input-prompt">
-                            <b-form-input id="form-input-prompt"
-                                          v-model="round.prompt"
-                                          required
-                                          class="w-100"
-                                          placeholder="Enter prompt">
-                            </b-form-input>
-                        </b-form-group>
+            <h5 class="default-cursor">{{ roundTitle }}</h5>
+            <div v-if="!isMobile">
+                <b-row class="mb-2" align-v="center" v-if="!isFastMoneyRound">
+                    <b-col :cols="mqOrdinal > mqOrdinals.notebook ? 1 : 2" class="default-cursor"
+                           :style="getColStyle()">
+                        Scale:
                     </b-col>
-                    <b-col v-if="!isFastMoneyRound">
-                        <b-form-group id="form-group-scale"
-                                      label="Scale:"
-                                      label-cols="3"
-                                      label-for="form-input-prompt">
-                            <b-form-select v-model="selectedScale" class="w-100" :options="scaleOptions"></b-form-select>
-                        </b-form-group>
+                    <b-col>
+                        <b-form-select v-model="selectedScale" :options="scaleOptions"></b-form-select>
                     </b-col>
                 </b-row>
+                <b-row class="mb-2" align-v="center">
+                    <b-col :cols="mqOrdinal > mqOrdinals.notebook ? 1 : 2" class="default-cursor"
+                           :style="getColStyle()">
+                        Prompt:
+                    </b-col>
+                    <b-col>
+                        <b-form-input id="form-input-prompt"
+                                      v-model="round.prompt"
+                                      required
+                                      class="w-100"
+                                      placeholder="Enter prompt" />
+                    </b-col>
+                </b-row>
+                <answer-list :answers="round.answers" :addAnswer="addAnswerToRound" :updateAnswers="updateActiveRoundAnswers" />
             </div>
             <div v-else>
+                <b-form-group v-if="!isFastMoneyRound" id="form-group-scale"
+                              class="mb-2"
+                              label-for="form-input-prompt">
+                    <b-form-select v-model="selectedScale" class="w-100" :options="scaleOptionsMobile"></b-form-select>
+                </b-form-group>
                 <b-form-group id="form-group-prompt"
-                              :label="isMobile ? '' : 'Prompt:'"
-                              :label-cols="isMobile ? 0 : 3"
-                              :class="{ 'ml-1': isTablet, 'mb-2': true }"
+                              class="mb-2"
                               label-for="form-input-prompt">
                     <b-form-input id="form-input-prompt"
                                   v-model="round.prompt"
@@ -41,19 +43,11 @@
                                   placeholder="Enter prompt">
                     </b-form-input>
                 </b-form-group>
-                <b-form-group v-if="!isFastMoneyRound" id="form-group-scale"
-                              :label="isMobile ? '' : 'Scale:'"
-                              :label-cols="isMobile ? 0 : 3"
-                              :class="{ 'ml-1': isTablet, 'mb-2': true }"
-                              label-for="form-input-prompt">
-                    <b-form-select v-model="selectedScale" class="w-100" :options="isMobile ? scaleOptionsMobile : scaleOptions"></b-form-select>
-                </b-form-group>
+                <answer-list :answers="round.answers" :addAnswer="addAnswerToRound" :updateAnswers="updateActiveRoundAnswers" />
             </div>
-            <b-row>
-                <b-col :class="{ 'text-right': !isMobile, 'text-center': isMobile }">
-                    <b-button variant="danger" v-if="!isFastMoneyRound" @click="deleteCurrentRound">Delete Round</b-button>
-                </b-col>
-            </b-row>
+            <div :class="{ 'text-right': !isMobile, 'text-center': isMobile }">
+                <b-button variant="danger" v-if="!isFastMoneyRound" @click="deleteCurrentRound">Delete Round</b-button>
+            </div>
         </div>
     </div>
 </template>
@@ -62,6 +56,7 @@
     import { Component, Prop, Vue } from 'vue-property-decorator';
     import draggable from 'vuedraggable';
     import Round from '@/components/types/Round';
+    import AnswerList from '@/components/game-editor-form/AnswerList.vue';
 
     interface ScaleOption {
         value: number,
@@ -70,7 +65,8 @@
 
     @Component({
         components: {
-            draggable
+            draggable,
+            AnswerList
         }
     })
     export default class RoundList extends Vue {
@@ -78,6 +74,8 @@
         @Prop() readonly roundTitle!: string;
         @Prop() readonly currentNumRounds!: number;
         @Prop() readonly deleteRound!: (roundId: number) => void;
+        @Prop() readonly addAnswerToRound!: () => void;
+        @Prop() readonly updateActiveRoundAnswers!: () => void;
 
         private readonly scaleOptions: ScaleOption[] = [
             { value: 1, text: 'Single' },
@@ -127,6 +125,12 @@
             }
         }
 
+        public getColStyle(): object {
+            if ((this as any).isNotebook)
+                return { 'max-width': '10.5%' };
+            return {};
+        }
+
         private checkScale(): void {
             if (!(this as any).isMobile && this.selectedScale === 0)
                 this.selectedScale = 1;
@@ -139,4 +143,7 @@
 </script>
 
 <style scoped>
+    .default-cursor {
+        cursor: default;
+    }
 </style>

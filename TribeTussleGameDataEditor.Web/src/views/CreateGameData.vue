@@ -2,7 +2,7 @@
     <div v-if="authenticated">
         <nav-bar :username="authenticatedUser.username" />
         <game-editor-form initGameDataName="Test"
-                          :rounds="[{ prompt: '', id: 1 }, { prompt: '', id: 2 }]"/>
+                          :rounds="defaultRounds"/>
     </div>
 </template>
 
@@ -11,6 +11,7 @@
     import AuthenticatedView from './AuthenticatedView';
     import NavBar from '@/components/NavBar.vue';
     import GameEditorForm from '@/components/game-editor-form/GameEditorForm.vue';
+    import Round from '@/components/types/Round';
 
     @Component({
         components: {
@@ -18,7 +19,25 @@
             GameEditorForm
         }
     })
-    export default class Home extends AuthenticatedView {
+    export default class CreateGameData extends AuthenticatedView {
+        private defaultRounds: Round[] = [
+            {
+                id: 1,
+                prompt: '',
+                answers: [
+                    { id: 1, text: '', value: 0 }
+                ],
+                active: true
+            },
+            {
+                id: 2,
+                prompt: '',
+                answers: [
+                    { id: 1, text: '', value: 0 }
+                ],
+                active: false
+            }
+        ];
     }
 </script>
 
