@@ -16,21 +16,21 @@
             </b-col>
             <b-col cols="8">
                 <b-form-input id="form-input-text"
+                              v-model="answer.text"
+                              @input="$emit('roundChanged')"
                               class="w-100"
                               required
-                              v-bind="answerText"
-                              @change="updateAnswer(index, answerText, answerValue)"
                               placeholder="Enter answer text">
                 </b-form-input>
             </b-col>
             <b-col cols="1" class="pl-0">
                 <b-form-input id="form-input-score"
+                              v-model="answer.value"
+                              @input="$emit('roundChanged')"
                               type="number"
                               placeholder="0"
                               style="width: 260%;"
                               max="100"
-                              v-bind="answerValue"
-                              @change="updateAnswer(index, answerText, answerValue)"
                               required>
                 </b-form-input>
             </b-col>
@@ -47,11 +47,17 @@
             </b-col>
             <b-col cols="7">
                 <b-form-input id="form-input-text"
+                              v-model="answer.text"
+                              @input="$emit('roundChanged')"
                               class="w-100 mb-2"
                               required
+                              v-bind="answer.text"
+                              @change="updateAnswer(index, answer)"
                               placeholder="Enter text">
                 </b-form-input>
                 <b-form-input id="form-input-score"
+                              v-model="answer.value"
+                              @input="$emit('roundChanged')"
                               type="number"
                               placeholder="0"
                               class="w-100"
@@ -72,10 +78,7 @@
         @Prop() readonly answer!: Answer;
         @Prop() readonly index!: number;
         @Prop() readonly deleteAnswer!: (index: number) => void;
-        @Prop() readonly updateAnswer!: (index: number, text: string, value: number) => void;
-
-        private answerText: string = this.answer.text;
-        private answerValue: number = this.answer.value;
+        @Prop() readonly updateAnswer!: (index: number, answer: Answer) => void;
     }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
     <div v-if="authenticated">
         <nav-bar :username="authenticatedUser.username" />
-        <game-editor-form initGameDataName="Test"
+        <game-editor-form initGameDataName=""
                           :rounds="defaultRounds"/>
     </div>
 </template>
@@ -24,6 +24,7 @@
             {
                 id: 1,
                 prompt: '',
+                scale: 1,
                 answers: [
                     { id: 1, text: '', value: 0 }
                 ],
@@ -32,6 +33,7 @@
             {
                 id: 2,
                 prompt: '',
+                scale: 1,
                 answers: [
                     { id: 1, text: '', value: 0 }
                 ],

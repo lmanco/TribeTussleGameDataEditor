@@ -64,18 +64,21 @@
                     this.updateActiveRound(this.rounds[this.activeRoundIndex], this.getRoundTitle(this.activeRoundIndex));
                 }
             }
+            if (event.moved.newIndex !== event.moved.oldIndex)
+                (this.$parent as any).markUnsaved();  // yikes...
         }
 
         public addRound(): void {
             const nextRoundId: number = Math.max(...this.rounds.map((round: Round) => round.id)) + 1;
             this.rounds = [
                 ...this.rounds.slice(0, this.rounds.length - 1),
-                { id: nextRoundId, prompt: '', answers: [{ id: 1, text: '', value: 0 }], active: true },
+                { id: nextRoundId, prompt: '', scale: 1, answers: [{ id: 1, text: '', value: 0 }], active: true },
                 this.rounds[this.rounds.length - 1]
             ];
             this.activeRoundIndex = this.rounds.length - 2;
             this.setActiveRound(nextRoundId, this.activeRoundIndex);
             (this.$parent as any).currentNumRounds = this.rounds.length; // yikes...
+            (this.$parent as any).markUnsaved();  // yikes...
         }
 
         public deleteRound(roundId: number): void {
@@ -84,6 +87,7 @@
                 this.activeRoundIndex--;
             this.setActiveRound(this.rounds[this.activeRoundIndex].id, this.activeRoundIndex);
             (this.$parent as any).currentNumRounds = this.rounds.length; // yikes...
+            (this.$parent as any).markUnsaved();  // yikes...
         }
 
         private getRoundTitle(index: number): string {

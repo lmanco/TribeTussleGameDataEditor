@@ -4,6 +4,8 @@ export default interface GameData {
 }
 
 export interface GameDataData {
+    questions: MainGameQuestion[],
+    fastMoney: Question[]
 }
 
 export interface Question {

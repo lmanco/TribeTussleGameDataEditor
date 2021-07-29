@@ -15,29 +15,35 @@
                                           required
                                           size="lg"
                                           :style="{ 'width': mqOrdinal <= mqOrdinals.tablet ? '100%' : '110%' }"
-                                          placeholder="Enter game data name">
+                                          :placeholder="isMobile ? 'Enter name' : 'Enter game data name'">
                             </b-form-input>
                         </b-form-group>
                     </b-col>
+                    <b-col cols="1" class="text-right" style="left: 2%;" v-if="mqOrdinal > mqOrdinals.tablet">
+                        <p class="font-italic text-muted" style="cursor: default;">{{ isUnsaved ? '(unsaved)' : '' }}</p>
+                    </b-col>
                     <b-col cols="5" class="mt-1 text-right" v-if="mqOrdinal > mqOrdinals.tablet">
-                        <b-button variant="danger" class="mr-2 pl-4 pr-4">Delete</b-button>
-                        <b-button variant="secondary" class="mr-2 pl-4 pr-4">Export</b-button>
-                        <b-button variant="primary" class="pl-4 pr-4">Save</b-button>
+                        <b-button variant="danger" class="mr-2 pl-4 pr-4" @click="deleteGameData">Delete</b-button>
+                        <b-button variant="secondary" class="mr-2 pl-4 pr-4" @click="exportGameData">Export</b-button>
+                        <b-button variant="primary" class="pl-4 pr-4" @click="saveGameData">Save</b-button>
                     </b-col>
                 </b-row>
+                <div :class="{ 'mt-3': isTablet, 'text-center': true }" v-if="mqOrdinal <= mqOrdinals.tablet && isUnsaved">
+                    <p class="font-italic text-muted" style="cursor: default;">(unsaved)</p>
+                </div>
                 <div :class="{ 'mt-3': isTablet, 'text-center': true }" v-if="mqOrdinal <= mqOrdinals.tablet">
-                    <b-button variant="danger" class="mr-2 pl-4 pr-4">Delete</b-button>
-                    <b-button variant="secondary" class="mr-2 pl-4 pr-4">Export</b-button>
-                    <b-button variant="primary" class="pl-4 pr-4">Save</b-button>
+                    <b-button variant="danger" class="mr-2 pl-4 pr-4" @click="deleteGameData">Delete</b-button>
+                    <b-button variant="secondary" class="mr-2 pl-4 pr-4" @click="exportGameData">Export</b-button>
+                    <b-button variant="primary" class="pl-4 pr-4" @click="saveGameData">Save</b-button>
                 </div>
                 <b-row class="mt-3 pl-2">
                     <b-col cols="4" class="pl-2 pr-1">
                         <round-list :initRounds="rounds" :updateActiveRound="updateActiveRound" ref="round-list" />
                     </b-col>
                     <b-col cols="8" class="pl-2">
-                        <round-form :round="activeRound ? activeRound : rounds[0]" :roundTitle="roundTitle"
+                        <round-form :round="activeRound" :roundTitle="roundTitle"
                                     :addAnswerToRound="addAnswerToRound" :updateActiveRoundAnswers="updateActiveRoundAnswers"
-                                    :deleteRound="deleteRound" :currentNumRounds="currentNumRounds" />
+                                    :deleteRound="deleteRound" :currentNumRounds="currentNumRounds" @roundChanged="onRoundChanged" />
                     </b-col>
                 </b-row>
             </b-container>
@@ -49,7 +55,8 @@
 </template>
 
 <script lang="ts">
-    import { Component, Prop, Vue } from 'vue-property-decorator';
+    import { Component, Prop, Inject, Vue } from 'vue-property-decorator';
+    import { GameDataService } from '@/services/API/GameDataService';
     import RoundList from './RoundList.vue';
     import Round from '@/components/types/Round';
     import RoundForm from './RoundForm.vue';
@@ -62,15 +69,19 @@
         }
     })
     export default class GameEditorForm extends Vue {
+        @Inject() readonly gameDataService!: GameDataService;
+
         @Prop() readonly initGameDataName!: string;
         @Prop() readonly rounds!: Round[];
 
         private isDev: boolean = process.env.NODE_ENV === 'development';
         private gameDataName: string = '';
-        private activeRound!: Round;
+        private activeRound: Round = this.rounds[0];
         private roundTitle: string;
         private currentNumRounds: number = 2;
         private fastMoneyRoundId: number = this.rounds[this.rounds.length - 1].id;
+        private isUnsaved: boolean = true;
+        private lastSavedName: string = '';
 
         public constructor() {
             super();
@@ -107,10 +118,67 @@
 
         public updateActiveRoundAnswers(answers: Answer[]): void {
             this.activeRound.answers = answers;
+            this.markUnsaved();
         }
 
         public deleteRound(roundId: number): void {
             (this.$refs['round-list'] as any).deleteRound(roundId);
+        }
+
+        public onRoundChanged(): void {
+            this.markUnsaved();
+        }
+
+        public markUnsaved(): void {
+            this.isUnsaved = true;
+        }
+
+        public async deleteGameData(): Promise<void> {
+            if (await this.$bvModal.msgBoxConfirm(
+                'Are you sure you want to delete the current game data? This operation cannot be undone.',
+                {
+                    title: 'Confirm',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okTitle: 'Yes',
+                    cancelTitle: 'No',
+                    footerClass: 'p-2',
+                    hideHeaderClose: false,
+                    centered: true
+                }
+            )) {
+                this.$router.push('/');
+            }
+        }
+
+        public exportGameData(): void {
+
+        }
+
+        public async saveGameData(): Promise<void> {
+            const rounds: Round[] = (this.$refs['round-list'] as any).rounds;
+            try {
+                //if (!this.lastSavedName) {
+                //    await this.gameDataService.createGameData({
+                //        name: this.gameDataName,
+                //        data: {
+                //            questions: rounds.map(round => ({
+                //                prompt: round.prompt,
+                //                scale: round.scale,
+                //                answers: round.answers.map(answer => ({
+                //                    text: answer.text,
+                //                    value: answer.value
+                //                }))
+                //            })),
+                //            fastMoney: null
+                //        }
+                //    });
+                //}
+                this.isUnsaved = false;
+            }
+            catch (apiResponseError) {
+
+            }
         }
     }
 </script>

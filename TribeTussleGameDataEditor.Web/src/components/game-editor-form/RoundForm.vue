@@ -1,6 +1,6 @@
 <template>
-    <div class="border">
-        <div :class="{ 'm-3': true, 'text-center': isMobile }">
+    <div class="border mb-3">
+        <div :class="{ 'mt-3': true, 'ml-3': true, 'mr-3': true, 'mb-2': true, 'text-center': isMobile }">
             <h5 class="default-cursor">{{ roundTitle }}</h5>
             <div v-if="!isMobile">
                 <b-row class="mb-2" align-v="center" v-if="!isFastMoneyRound">
@@ -9,7 +9,7 @@
                         Scale:
                     </b-col>
                     <b-col>
-                        <b-form-select v-model="selectedScale" :options="scaleOptions"></b-form-select>
+                        <b-form-select v-model="round.scale" :options="scaleOptions" @change="$parent.markUnsaved()"></b-form-select>
                     </b-col>
                 </b-row>
                 <b-row class="mb-2" align-v="center">
@@ -20,30 +20,34 @@
                     <b-col>
                         <b-form-input id="form-input-prompt"
                                       v-model="round.prompt"
+                                      @input="$parent.markUnsaved()"
                                       required
                                       class="w-100"
                                       placeholder="Enter prompt" />
                     </b-col>
                 </b-row>
-                <answer-list :answers="round.answers" :addAnswer="addAnswerToRound" :updateAnswers="updateActiveRoundAnswers" />
+                <answer-list v-on="$listeners"
+                             :answers="round.answers" :addAnswer="addAnswerToRound" :updateAnswers="updateActiveRoundAnswers" />
             </div>
             <div v-else>
                 <b-form-group v-if="!isFastMoneyRound" id="form-group-scale"
                               class="mb-2"
                               label-for="form-input-prompt">
-                    <b-form-select v-model="selectedScale" class="w-100" :options="scaleOptionsMobile"></b-form-select>
+                    <b-form-select v-model="round.scale" class="w-100" :options="scaleOptionsMobile" @change="$parent.markUnsaved()" />
                 </b-form-group>
                 <b-form-group id="form-group-prompt"
                               class="mb-2"
                               label-for="form-input-prompt">
                     <b-form-input id="form-input-prompt"
                                   v-model="round.prompt"
+                                  @input="$parent.markUnsaved()"
                                   required
                                   class="w-100"
                                   placeholder="Enter prompt">
                     </b-form-input>
                 </b-form-group>
-                <answer-list :answers="round.answers" :addAnswer="addAnswerToRound" :updateAnswers="updateActiveRoundAnswers" />
+                <answer-list v-on="$listeners"
+                             :answers="round.answers" :addAnswer="addAnswerToRound" :updateAnswers="updateActiveRoundAnswers" />
             </div>
             <div :class="{ 'text-right': !isMobile, 'text-center': isMobile }">
                 <b-button variant="danger" v-if="!isFastMoneyRound" @click="deleteCurrentRound">Delete Round</b-button>
@@ -57,6 +61,7 @@
     import draggable from 'vuedraggable';
     import Round from '@/components/types/Round';
     import AnswerList from '@/components/game-editor-form/AnswerList.vue';
+    import Answer from '@/components/types/Answer';
 
     interface ScaleOption {
         value: number,
@@ -75,7 +80,7 @@
         @Prop() readonly currentNumRounds!: number;
         @Prop() readonly deleteRound!: (roundId: number) => void;
         @Prop() readonly addAnswerToRound!: () => void;
-        @Prop() readonly updateActiveRoundAnswers!: () => void;
+        @Prop() readonly updateActiveRoundAnswers!: (answers: Answer[]) => void;
 
         private readonly scaleOptions: ScaleOption[] = [
             { value: 1, text: 'Single' },
@@ -83,16 +88,10 @@
             { value: 3, text: 'Triple' }
         ];
         private readonly scaleOptionsMobile: ScaleOption[] = [
-            { value: 0, text: 'Select Scale' },
-            ...this.scaleOptions
+            { value: 1, text: 'Scale: Single' },
+            { value: 2, text: 'Scale: Double' },
+            { value: 3, text: 'Scale: Triple' }
         ];
-        private selectedScale: number = 0;
-
-        public mounted(): void {
-            window.addEventListener("resize", this.checkScale);
-            if (!(this as any).isMobile)
-                this.selectedScale = 1;
-        }
 
         public async deleteCurrentRound(): Promise<void> {
             if (await this.showDeletionConfirmationModal())
@@ -129,11 +128,6 @@
             if ((this as any).isNotebook)
                 return { 'max-width': '10.5%' };
             return {};
-        }
-
-        private checkScale(): void {
-            if (!(this as any).isMobile && this.selectedScale === 0)
-                this.selectedScale = 1;
         }
 
         get isFastMoneyRound() {

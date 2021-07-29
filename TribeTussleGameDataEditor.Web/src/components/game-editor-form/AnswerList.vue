@@ -12,8 +12,7 @@
                     <draggable v-model="updatedAnswers" handle=".drag-handle" class="m-2" @change="answerDropped">
                         <transition-group>
                             <ul class="list-group" v-for="(answer, index) in answers" :key="answer.id">
-                                <answer-list-item :answer="answer" :index="index" :deleteAnswer="deleteAnswer"
-                                                  :updateAnswer="updateAnswer" />
+                                <answer-list-item v-on="$listeners" :answer="answer" :index="index" :deleteAnswer="deleteAnswer" />
                             </ul>
                         </transition-group>
                     </draggable>
@@ -24,7 +23,7 @@
 </template>
 
 <script lang="ts">
-    import { Component, Prop, Vue } from 'vue-property-decorator';
+    import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
     import draggable from 'vuedraggable';
     import Answer from '@/components/types/Answer';
     import AnswerListItem from './AnswerListItem.vue';
@@ -47,13 +46,12 @@
             this.updatedAnswers = this.answers;
         }
 
-        public answerDropped(): void {
-            this.updateAnswers(this.updatedAnswers);
+        @Watch('answers')
+        public onAnswersChanged(newAnswers: Answer[]): void {
+            this.updatedAnswers = newAnswers;
         }
 
-        public updateAnswer(index: number, text: string, value: number): void {
-            this.updatedAnswers[index].text = text;
-            this.updatedAnswers[index].value = value;
+        public answerDropped(): void {
             this.updateAnswers(this.updatedAnswers);
         }
 
