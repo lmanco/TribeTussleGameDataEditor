@@ -1,5 +1,5 @@
 <template>
-    <li class="list-group-item">
+    <li :class="{ 'list-group-item': true, 'item-top-border': index === 0 }">
         <b-row align-v="center" v-if="mqOrdinal >= mqOrdinals.notebook">
             <b-col cols="1" class="col-sm-auto pr-0">
                 <span class="drag-handle">
@@ -89,5 +89,9 @@
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
         opacity: 1;
+    }
+
+    .list-group-item:not(.item-top-border) {
+        border-top: none;
     }
 </style>

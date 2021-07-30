@@ -11,7 +11,9 @@
                 <b-col>
                     <draggable v-model="updatedAnswers" handle=".drag-handle" class="m-2" @change="answerDropped">
                         <transition-group>
-                            <ul class="list-group" v-for="(answer, index) in answers" :key="answer.id">
+                            <ul :class="{ 'list-group': true, 'first-answer-list-item': index === 0,
+                                'last-answer-list-item': index === answers.length -1 }"
+                                v-for="(answer, index) in answers" :key="answer.id">
                                 <answer-list-item v-on="$listeners" :answer="answer" :index="index" :deleteAnswer="deleteAnswer" />
                             </ul>
                         </transition-group>
@@ -74,4 +76,15 @@
 </script>
 
 <style scoped>
+    ul:not(.first-answer-list-item) {
+        border-top-left-radius: unset;
+        border-top-right-radius: unset;
+        border-top: none;
+    }
+
+    ul:not(.last-answer-list-item) {
+        border-bottom-left-radius: unset;
+        border-bottom-right-radius: unset;
+        border-bottom: none;
+    }
 </style>
