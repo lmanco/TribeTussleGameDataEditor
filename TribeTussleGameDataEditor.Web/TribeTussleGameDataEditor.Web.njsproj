@@ -35,6 +35,15 @@
     <Content Include="public\favicon.ico" />
     <Content Include="public\index.html" />
     <Content Include="src\App.vue" />
+    <Content Include="src\components\game-editor-form\AnswerList.vue">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\components\game-editor-form\AnswerListItem.vue">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\components\game-editor-form\FastMoneyRoundForm.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\components\game-editor-form\GameEditorForm.vue">
       <SubType>Code</SubType>
     </Content>

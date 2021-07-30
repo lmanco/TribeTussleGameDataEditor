@@ -85,4 +85,7 @@
 </script>
 
 <style scoped>
+    input::-webkit-calendar-picker-indicator {
+        opacity: 100;
+    }
 </style>

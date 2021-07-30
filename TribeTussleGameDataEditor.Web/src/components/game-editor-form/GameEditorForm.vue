@@ -184,26 +184,39 @@
         public async saveGameData(): Promise<void> {
             const rounds: Round[] = (this.$refs['round-list'] as any).rounds;
             try {
-                //if (!this.lastSavedName) {
-                //    await this.gameDataService.createGameData({
-                //        name: this.gameDataName,
-                //        data: {
-                //            questions: rounds.map(round => ({
-                //                prompt: round.prompt,
-                //                scale: round.scale,
-                //                answers: round.answers.map(answer => ({
-                //                    text: answer.text,
-                //                    value: answer.value
-                //                }))
-                //            })),
-                //            fastMoney: null
-                //        }
-                //    });
-                //}
+                if (!this.lastSavedName) {
+                    await this.gameDataService.createGameData({
+                        name: this.gameDataName,
+                        data: {
+                            questions: rounds.slice(0, -1).map(round => ({
+                                prompt: round.prompt,
+                                scale: round.scale,
+                                answers: round.answers.map(answer => ({
+                                    text: answer.text,
+                                    value: answer.value
+                                }))
+                            })),
+                            fastMoney: this.orderedFastMoneyQuestions.map(question => ({
+                                prompt: question.prompt,
+                                answers: question.answers.map(answer => ({
+                                    text: answer.text,
+                                    value: answer.value
+                                }))
+                            }))
+                        }
+                    });
+                }
                 this.isUnsaved = false;
             }
             catch (apiResponseError) {
-
+                this.$bvModal.msgBoxOk(apiResponseError.detailMessages.join('\n'), {
+                    title: 'Error',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    footerClass: 'p-2',
+                    hideHeaderClose: false,
+                    centered: true
+                });
             }
         }
     }
