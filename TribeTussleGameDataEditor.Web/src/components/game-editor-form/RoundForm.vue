@@ -74,7 +74,7 @@
             AnswerList
         }
     })
-    export default class RoundList extends Vue {
+    export default class RoundForm extends Vue {
         @Prop() readonly round!: Round;
         @Prop() readonly roundTitle!: string;
         @Prop() readonly currentNumRounds!: number;

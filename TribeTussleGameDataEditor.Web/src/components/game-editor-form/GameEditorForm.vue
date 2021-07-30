@@ -38,12 +38,17 @@
                 </div>
                 <b-row class="mt-3 pl-2">
                     <b-col cols="4" class="pl-2 pr-1">
-                        <round-list :initRounds="rounds" :updateActiveRound="updateActiveRound" ref="round-list" />
+                        <round-list :initRounds="rounds" :updateActiveRound="updateActiveRound" ref="round-list"
+                                    @numRoundsChanged="onNumRoundsChanged" />
                     </b-col>
                     <b-col cols="8" class="pl-2">
-                        <round-form :round="activeRound" :roundTitle="roundTitle"
+                        <round-form v-if="activeRound.id !== fastMoneyRoundId" :round="activeRound" :roundTitle="roundTitle"
                                     :addAnswerToRound="addAnswerToRound" :updateActiveRoundAnswers="updateActiveRoundAnswers"
                                     :deleteRound="deleteRound" :currentNumRounds="currentNumRounds" @roundChanged="onRoundChanged" />
+                        <fast-money-round-form v-else :activeQuestion="activeFastMoneyQuestion" :questions="orderedFastMoneyQuestions"
+                                               :updateOrderedQuestions="updateOrderedFastMoneyQuestions"
+                                               :updateActiveQuestion="updateActiveFastMoneyQuestion" :addAnswerToRound="addAnswerToFastMoneyQuestion"
+                                               :updateActiveRoundAnswers="updateActiveFastMoneyQuestionAnswers" @roundChanged="onRoundChanged" />
                     </b-col>
                 </b-row>
             </b-container>
@@ -60,12 +65,14 @@
     import RoundList from './RoundList.vue';
     import Round from '@/components/types/Round';
     import RoundForm from './RoundForm.vue';
+    import FastMoneyRoundForm from './FastMoneyRoundForm.vue';
     import Answer from '@/components/types/Answer';
 
     @Component({
         components: {
             RoundList,
-            RoundForm
+            RoundForm,
+            FastMoneyRoundForm
         }
     })
     export default class GameEditorForm extends Vue {
@@ -73,21 +80,18 @@
 
         @Prop() readonly initGameDataName!: string;
         @Prop() readonly rounds!: Round[];
+        @Prop() readonly fastMoneyQuestions!: Round[];
 
         private isDev: boolean = process.env.NODE_ENV === 'development';
         private gameDataName: string = '';
         private activeRound: Round = this.rounds[0];
-        private roundTitle: string;
+        private activeFastMoneyQuestion: Round = this.fastMoneyQuestions[0];
+        private orderedFastMoneyQuestions: Round[] = this.fastMoneyQuestions;
+        private roundTitle: string = 'Round 1';
         private currentNumRounds: number = 2;
         private fastMoneyRoundId: number = this.rounds[this.rounds.length - 1].id;
         private isUnsaved: boolean = true;
         private lastSavedName: string = '';
-
-        public constructor() {
-            super();
-            this.activeRound = this.rounds[0];
-            this.roundTitle = 'Round 1';
-        }
 
         public mounted(): void {
             if (this.initGameDataName)
@@ -99,8 +103,16 @@
             this.roundTitle = title;
         }
 
+        public updateActiveFastMoneyQuestion(question: Round): void {
+            this.activeFastMoneyQuestion = question;
+        }
+
+        public updateOrderedFastMoneyQuestions(questions: Round[]): void {
+            this.orderedFastMoneyQuestions = questions;
+        }
+
         public addAnswerToRound(): void {
-            if (this.activeRound.id === this.fastMoneyRoundId || this.activeRound.answers.length < 12) {
+            if (this.activeRound.answers.length < 12) {
                 const nextId: number = Math.max(...this.activeRound.answers.map(answer => answer.id)) + 1;
                 this.activeRound.answers.push({ id: nextId, text: '', value: 0 });
             }
@@ -116,13 +128,27 @@
             }
         }
 
+        public addAnswerToFastMoneyQuestion(): void {
+            const nextId: number = Math.max(...this.activeFastMoneyQuestion.answers.map(answer => answer.id)) + 1;
+            this.activeFastMoneyQuestion.answers.push({ id: nextId, text: '', value: 0 });
+        }
+
         public updateActiveRoundAnswers(answers: Answer[]): void {
             this.activeRound.answers = answers;
             this.markUnsaved();
         }
 
+        public updateActiveFastMoneyQuestionAnswers(answers: Answer[]): void {
+            this.activeFastMoneyQuestion.answers = answers;
+            this.markUnsaved();
+        }
+
         public deleteRound(roundId: number): void {
             (this.$refs['round-list'] as any).deleteRound(roundId);
+        }
+
+        public onNumRoundsChanged(newNumRounds: number): void {
+            this.currentNumRounds = newNumRounds;
         }
 
         public onRoundChanged(): void {
