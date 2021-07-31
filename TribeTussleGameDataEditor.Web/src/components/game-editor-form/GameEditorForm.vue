@@ -56,6 +56,13 @@
         <div v-if="isDev">
             Media Query: {{ $mq }}
         </div>
+        <b-modal id="error-messages-modal" ref="error-messages-modal" title="Error" ok-only>
+            <b-container>
+                <div v-for="errorMessage in errorMessages" class="error">
+                    {{ errorMessage }}
+                </div>
+            </b-container>
+        </b-modal>
     </div>
 </template>
 
@@ -92,6 +99,7 @@
         private fastMoneyRoundId: number = this.rounds[this.rounds.length - 1].id;
         private isUnsaved: boolean = true;
         private lastSavedName: string = '';
+        private errorMessages: string[] = [];
 
         public mounted(): void {
             if (this.initGameDataName)
@@ -209,18 +217,24 @@
                 this.isUnsaved = false;
             }
             catch (apiResponseError) {
-                this.$bvModal.msgBoxOk(apiResponseError.detailMessages.join('\n'), {
-                    title: 'Error',
-                    size: 'sm',
-                    buttonSize: 'sm',
-                    footerClass: 'p-2',
-                    hideHeaderClose: false,
-                    centered: true
-                });
+                this.errorMessages = apiResponseError.detailMessages
+                    .reduce((messages: string[], message: string) => [...messages, ...message.split('\n')], []);
+                (this.$refs['error-messages-modal'] as any).show();
+                //this.$bvModal.msgBoxOk(apiResponseError.detailMessages.join('\n'), {
+                //    title: 'Error',
+                //    size: 'sm',
+                //    buttonSize: 'sm',
+                //    footerClass: 'p-2',
+                //    hideHeaderClose: false,
+                //    centered: true
+                //});
             }
         }
     }
 </script>
 
 <style scoped>
+    .error {
+        color: red;
+    }
 </style>
