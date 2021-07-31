@@ -74,6 +74,7 @@
     import RoundForm from './RoundForm.vue';
     import FastMoneyRoundForm from './FastMoneyRoundForm.vue';
     import Answer from '@/components/types/Answer';
+    import GameData from '@/services/API/types/GameData';
 
     @Component({
         components: {
@@ -192,42 +193,37 @@
         public async saveGameData(): Promise<void> {
             const rounds: Round[] = (this.$refs['round-list'] as any).rounds;
             try {
-                if (!this.lastSavedName) {
-                    await this.gameDataService.createGameData({
-                        name: this.gameDataName,
-                        data: {
-                            questions: rounds.slice(0, -1).map(round => ({
-                                prompt: round.prompt,
-                                scale: round.scale,
-                                answers: round.answers.map(answer => ({
-                                    text: answer.text,
-                                    value: answer.value
-                                }))
-                            })),
-                            fastMoney: this.orderedFastMoneyQuestions.map(question => ({
-                                prompt: question.prompt,
-                                answers: question.answers.map(answer => ({
-                                    text: answer.text,
-                                    value: answer.value
-                                }))
+                const gameDataRequest: GameData = {
+                    name: this.gameDataName,
+                    data: {
+                        questions: rounds.slice(0, -1).map(round => ({
+                            prompt: round.prompt,
+                            scale: round.scale,
+                            answers: round.answers.map(answer => ({
+                                text: answer.text,
+                                value: answer.value
                             }))
-                        }
-                    });
-                }
+                        })),
+                        fastMoney: this.orderedFastMoneyQuestions.map(question => ({
+                            prompt: question.prompt,
+                            answers: question.answers.map(answer => ({
+                                text: answer.text,
+                                value: answer.value
+                            }))
+                        }))
+                    }
+                };
+                if (!this.lastSavedName)
+                    await this.gameDataService.createGameData(gameDataRequest);
+                else
+                    await this.gameDataService.updateGameData(this.lastSavedName, gameDataRequest);
+                this.lastSavedName = this.gameDataName;
                 this.isUnsaved = false;
             }
             catch (apiResponseError) {
                 this.errorMessages = apiResponseError.detailMessages
                     .reduce((messages: string[], message: string) => [...messages, ...message.split('\n')], []);
                 (this.$refs['error-messages-modal'] as any).show();
-                //this.$bvModal.msgBoxOk(apiResponseError.detailMessages.join('\n'), {
-                //    title: 'Error',
-                //    size: 'sm',
-                //    buttonSize: 'sm',
-                //    footerClass: 'p-2',
-                //    hideHeaderClose: false,
-                //    centered: true
-                //});
             }
         }
     }
