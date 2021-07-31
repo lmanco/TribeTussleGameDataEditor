@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="home page-header bg-dark text-light">
-            <b-container>
+            <b-container class="text-center">
                 <b-row align-h="center">
                     <h1>Tribe Tussle Game Data Editor</h1>
                 </b-row>
                 <b-row align-h="center">
-                    <p>A single-page app built with <a href="https://vuejs.org" target="_blank">Vue.js</a> and <a href="http://www.typescriptlang.org/" target="_blank">TypeScript</a>.</p>
+                    <p>A generic game data editor for Tribe Tussle.</p>
                 </b-row>
             </b-container>
         </div>

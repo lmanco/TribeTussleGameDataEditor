@@ -1,6 +1,11 @@
 <template>
     <div id="app">
-        <router-view/>
+        <div id="content">
+            <router-view />
+        </div>
+        <footer class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+            &copy; 2021 About Airplane LLC, All Rights Reserved
+        </footer>
     </div>
 </template>
 
@@ -42,6 +47,10 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         color: #2c3e50;
+
+       display: flex;
+       flex-direction: column;
+       min-height: 100vh;
     }
 
     #nav {
@@ -59,5 +68,14 @@
 
     body {
         background-color: #EEF1F4 !important;
+    }
+
+    div#content {
+        flex-grow: 1;
+    }
+
+    footer {
+        margin-top: 12px;
+        font-size: 0.85rem;
     }
 </style>
