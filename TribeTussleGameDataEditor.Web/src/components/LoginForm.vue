@@ -2,7 +2,7 @@
     <div class="login-form">
         <b-container>
             <b-row align-h="center" class="mt-5">
-                <b-col cols="5">
+                <b-col :cols="isMobile ? 10 : (isTablet ? 8 : 5)">
                     <b-card class="p-3">
                         <b-form @submit.prevent="submitLogin">
                             <b-form-group id="login-form-group-username"
