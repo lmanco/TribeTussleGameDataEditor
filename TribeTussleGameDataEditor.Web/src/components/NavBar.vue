@@ -13,7 +13,7 @@
                             <b-input-group-prepend is-text>
                                 <b-icon icon="search"></b-icon>
                             </b-input-group-prepend>
-                            <b-form-input list="games-list" placeholder="Select Game Data..."></b-form-input>
+                            <b-form-input list="games-list" placeholder="Select Game Data..." @change="loadGame"></b-form-input>
                             <b-form-datalist id="games-list" :options="gameNames"></b-form-datalist>
                         </b-input-group>
                     </b-nav-form>
@@ -63,6 +63,10 @@
         private state: FormState = FormState.Ready;
 
         public async mounted(): Promise<void> {
+            await this.fetchGameNames();
+        }
+
+        public async fetchGameNames(): Promise<void> {
             try {
                 this.gameNames = await this.gameDataService.getGameNames();
             }
@@ -73,6 +77,12 @@
 
         public createNewGame(): void {
             this.$router.push('/create-game-data')
+        }
+
+        public loadGame(gameDataName: string): void {
+            const editPath: string = `/edit-game-data/${gameDataName}`;
+            if (this.$route.path !== editPath)
+                this.$router.push(editPath);
         }
 
         public async logOut(): Promise<void> {

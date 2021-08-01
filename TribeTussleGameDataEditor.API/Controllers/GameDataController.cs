@@ -101,8 +101,9 @@ namespace TribeTussleGameDataEditor.API.Controllers
 
         private ActionResult<IResponseObject> GameDataNotFound(string errorDetail)
         {
-            return _responseObjectFactory
+            IResponseObject response = _responseObjectFactory
                 .CreateErrorResponseObject(HttpStatusCode.NotFound, NotFoundTitle, errorDetail);
+            return NotFound(response);
         }
     }
 }

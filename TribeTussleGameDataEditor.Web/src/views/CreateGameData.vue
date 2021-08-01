@@ -1,7 +1,7 @@
 <template>
     <div v-if="authenticated">
-        <nav-bar :username="authenticatedUser.username" />
-        <game-editor-form initGameDataName=""
+        <nav-bar :username="authenticatedUser.username" ref="nav-bar" />
+        <game-editor-form initGameDataName="" :updateNavBarGameNames="updateNavBarGameNames"
                           :rounds="defaultRounds" :fastMoneyQuestions="defaultFastMoneyQuestions"/>
     </div>
 </template>
@@ -12,6 +12,7 @@
     import NavBar from '@/components/NavBar.vue';
     import GameEditorForm from '@/components/game-editor-form/GameEditorForm.vue';
     import Round from '@/components/types/Round';
+    import { defaultRoundList, defaultFastMoneyQuestionList } from '@/views/Constants';
 
     @Component({
         components: {
@@ -20,64 +21,12 @@
         }
     })
     export default class CreateGameData extends AuthenticatedView {
-        private readonly defaultRounds: Round[] = [
-            {
-                id: 1,
-                prompt: '',
-                scale: 1,
-                answers: [
-                    { id: 1, text: '', value: 0 }
-                ],
-                active: true
-            },
-            {
-                id: 2,
-                prompt: '',
-                scale: 1,
-                answers: [
-                    { id: 1, text: '', value: 0 }
-                ],
-                active: false
-            }
-        ];
+        private readonly defaultRounds: Round[] = defaultRoundList;
+        private readonly defaultFastMoneyQuestions: Round[] = defaultFastMoneyQuestionList;
 
-        private readonly defaultFastMoneyQuestions: Round[] = [
-            {
-                id: 1,
-                prompt: '',
-                scale: 1,
-                answers: [{ id: 1, text: '', value: 0 }],
-                active: true
-            },
-            {
-                id: 2,
-                prompt: '',
-                scale: 1,
-                answers: [{ id: 1, text: '', value: 0 }],
-                active: false
-            },
-            {
-                id: 3,
-                prompt: '',
-                scale: 1,
-                answers: [{ id: 1, text: '', value: 0 }],
-                active: false
-            },
-            {
-                id: 4,
-                prompt: '',
-                scale: 1,
-                answers: [{ id: 1, text: '', value: 0 }],
-                active: false
-            },
-            {
-                id: 5,
-                prompt: '',
-                scale: 1,
-                answers: [{ id: 1, text: '', value: 0 }],
-                active: false
-            }
-        ]
+        public async updateNavBarGameNames(): Promise<void> {
+            await (this.$refs['nav-bar'] as any).fetchGameNames();
+        }
     }
 </script>
 

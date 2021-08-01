@@ -23,18 +23,18 @@
                         <p class="font-italic text-muted" style="cursor: default;">{{ isUnsaved ? '(unsaved)' : '' }}</p>
                     </b-col>
                     <b-col cols="5" class="mt-1 text-right" v-if="mqOrdinal > mqOrdinals.tablet">
-                        <b-button variant="danger" class="mr-2 pl-4 pr-4" @click="deleteGameData">Delete</b-button>
-                        <b-button variant="secondary" class="mr-2 pl-4 pr-4" @click="exportGameData">Export</b-button>
-                        <b-button variant="primary" class="pl-4 pr-4" @click="saveGameData">Save</b-button>
+                        <b-button variant="danger" class="mr-2 pl-4 pr-4" @click="deleteGameData" :disabled="formLoading()">Delete</b-button>
+                        <b-button variant="secondary" class="mr-2 pl-4 pr-4" @click="exportGameData" :disabled="formLoading()">Export</b-button>
+                        <b-button variant="primary" class="pl-4 pr-4" @click="saveGameData" :disabled="formLoading()">Save</b-button>
                     </b-col>
                 </b-row>
                 <div :class="{ 'mt-3': isTablet, 'text-center': true }" v-if="mqOrdinal <= mqOrdinals.tablet && isUnsaved">
                     <p class="font-italic text-muted" style="cursor: default;">(unsaved)</p>
                 </div>
                 <div :class="{ 'mt-3': isTablet, 'text-center': true }" v-if="mqOrdinal <= mqOrdinals.tablet">
-                    <b-button variant="danger" class="mr-2 pl-4 pr-4" @click="deleteGameData">Delete</b-button>
-                    <b-button variant="secondary" class="mr-2 pl-4 pr-4" @click="exportGameData">Export</b-button>
-                    <b-button variant="primary" class="pl-4 pr-4" @click="saveGameData">Save</b-button>
+                    <b-button variant="danger" class="mr-2 pl-4 pr-4" @click="deleteGameData" :disabled="formLoading()">Delete</b-button>
+                    <b-button variant="secondary" class="mr-2 pl-4 pr-4" @click="exportGameData" :disabled="formLoading()">Export</b-button>
+                    <b-button variant="primary" class="pl-4 pr-4" @click="saveGameData" :disabled="formLoading()">Save</b-button>
                 </div>
                 <b-row class="mt-3 pl-2">
                     <b-col cols="4" class="pl-2 pr-1">
@@ -75,6 +75,7 @@
     import FastMoneyRoundForm from './FastMoneyRoundForm.vue';
     import Answer from '@/components/types/Answer';
     import GameData from '@/services/API/types/GameData';
+    import { FormState } from '@/components/enums';
 
     @Component({
         components: {
@@ -87,6 +88,7 @@
         @Inject() readonly gameDataService!: GameDataService;
 
         @Prop() readonly initGameDataName!: string;
+        @Prop() readonly updateNavBarGameNames!: () => Promise<void>;
         @Prop() readonly rounds!: Round[];
         @Prop() readonly fastMoneyQuestions!: Round[];
 
@@ -101,10 +103,13 @@
         private isUnsaved: boolean = true;
         private lastSavedName: string = '';
         private errorMessages: string[] = [];
+        private state: FormState = FormState.Ready;
 
         public mounted(): void {
-            if (this.initGameDataName)
+            if (this.initGameDataName) {
                 this.gameDataName = this.initGameDataName;
+                this.lastSavedName = this.initGameDataName;
+            }
         }
 
         public updateActiveRound(round: Round, title: string): void {
@@ -182,7 +187,18 @@
                     centered: true
                 }
             )) {
-                this.$router.push('/');
+                if (this.formLoading())
+                    return;
+                this.state = FormState.Loading;
+                try {
+                    if (this.lastSavedName)
+                        await this.gameDataService.deleteGameData(this.lastSavedName);
+                    this.$router.push('/');
+                }
+                catch (apiResponseError) {
+                    this.showErrors(apiResponseError.detailMessages
+                        .reduce((messages: string[], message: string) => [...messages, ...message.split('\n')], []));
+                }
             }
         }
 
@@ -191,6 +207,9 @@
         }
 
         public async saveGameData(): Promise<void> {
+            if (this.formLoading())
+                return;
+            this.state = FormState.Loading;
             const rounds: Round[] = (this.$refs['round-list'] as any).rounds;
             try {
                 const gameDataRequest: GameData = {
@@ -221,10 +240,20 @@
                 this.isUnsaved = false;
             }
             catch (apiResponseError) {
-                this.errorMessages = apiResponseError.detailMessages
-                    .reduce((messages: string[], message: string) => [...messages, ...message.split('\n')], []);
-                (this.$refs['error-messages-modal'] as any).show();
+                this.showErrors(apiResponseError.detailMessages
+                    .reduce((messages: string[], message: string) => [...messages, ...message.split('\n')], []));
             }
+            this.state = FormState.Ready;
+            await this.updateNavBarGameNames();
+        }
+
+        public formLoading(): boolean {
+            return this.state !== FormState.Ready;
+        }
+
+        private showErrors(errorMessages: string[]): void {
+            this.errorMessages = errorMessages;
+            (this.$refs['error-messages-modal'] as any).show();
         }
     }
 </script>

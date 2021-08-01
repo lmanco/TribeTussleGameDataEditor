@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <div id="content">
-            <router-view />
+            <router-view :key="$route.fullPath" />
         </div>
         <footer class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
             &copy; 2021 About Airplane LLC, All Rights Reserved
