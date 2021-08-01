@@ -25,7 +25,7 @@
                             </em>
                         </template>
                         <b-dropdown-item href="#" @click="createNewGame">Create New Game Data</b-dropdown-item>
-                        <b-dropdown-item href="#">Import Game Data</b-dropdown-item>
+                        <!-- <b-dropdown-item href="#" @click="importGame">Import Game Data</b-dropdown-item> -->
                     </b-nav-item-dropdown>
                     <b-nav-item-dropdown right>
                         <!-- Using 'button-content' slot -->
@@ -83,6 +83,9 @@
             const editPath: string = `/edit-game-data/${gameDataName}`;
             if (this.$route.path !== editPath)
                 this.$router.push(editPath);
+        }
+
+        public importGame(): void {
         }
 
         public async logOut(): Promise<void> {
