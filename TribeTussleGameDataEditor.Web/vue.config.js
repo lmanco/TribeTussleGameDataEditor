@@ -6,3 +6,5 @@ module.exports = {
     },
     outputDir: path.resolve(__dirname, '../TribeTussleGameDataEditor.API/wwwroot')
 }
+
+process.env.VUE_APP_DEV_DATA_ROOT = module.exports.devServer.proxy;

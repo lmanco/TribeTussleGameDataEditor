@@ -6,6 +6,7 @@ namespace TribeTussleGameDataEditor.API.Util
     public interface IFileReader
     {
         string ReadAllText(string fileName);
+        byte[] ReadAllBytes(string fileName);
         string[] GetFilesInDirectory(string directoryName, string searchPattern);
         string GetFileExtension(string fileName);
         bool FileDirectoryExists(string fileName);
@@ -20,6 +21,13 @@ namespace TribeTussleGameDataEditor.API.Util
 #pragma warning restore CA1822 // Mark members as static
         {
             return File.ReadAllText(fileName);
+        }
+
+#pragma warning disable CA1822 // Mark members as static
+        public byte[] ReadAllBytes(string fileName)
+#pragma warning restore CA1822 // Mark members as static
+        {
+            return File.ReadAllBytes(fileName);
         }
 
 #pragma warning disable CA1822 // Mark members as static

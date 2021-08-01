@@ -51,8 +51,6 @@
                               @input="$emit('roundChanged')"
                               class="w-100 mb-2"
                               required
-                              v-bind="answer.text"
-                              @change="updateAnswer(index, answer)"
                               placeholder="Enter text">
                 </b-form-input>
                 <b-form-input id="form-input-score"

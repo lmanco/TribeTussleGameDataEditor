@@ -9,8 +9,10 @@ export interface Requester {
     delete(path: string, queryParams?: { [key: string]: string }): Promise<APISuccessResponse>;
 }
 
+export const RoutePrefix: string = '/api/v1/';
+
 export class FetchRequester implements Requester {
-    private static readonly ROUTE_PREFIX: string = '/api/v1/';
+    private static readonly ROUTE_PREFIX: string = RoutePrefix;
 
     public async get(path: string, queryParams: { [key: string]: string } = {}): Promise<APISuccessResponse> {
         return await this.requestWithoutBody('GET', path, queryParams);

@@ -106,9 +106,11 @@
         private state: FormState = FormState.Ready;
 
         public mounted(): void {
-            if (this.initGameDataName) {
+            if (this.initGameDataName)
                 this.gameDataName = this.initGameDataName;
+            if (this.$route.params.name) {
                 this.lastSavedName = this.initGameDataName;
+                this.isUnsaved = false;
             }
         }
 
@@ -202,8 +204,11 @@
             }
         }
 
-        public exportGameData(): void {
-
+        public async exportGameData(): Promise<void> {
+            if (this.isUnsaved)
+                await this.saveGameData();
+            if (!this.isUnsaved)
+                this.gameDataService.exportGameData(this.gameDataName);
         }
 
         public async saveGameData(): Promise<void> {

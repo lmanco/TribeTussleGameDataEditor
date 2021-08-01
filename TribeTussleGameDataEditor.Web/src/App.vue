@@ -26,11 +26,13 @@
     const requester: Requester = new FetchRequester();
     const siteUrlOverride: string | undefined = process.env.NODE_ENV === 'development' ?
         `${window.location.protocol}//${window.location.host}` : undefined;
+    const dataRootUrl: string = process.env.NODE_ENV === 'development' ?
+        process.env.VUE_APP_DEV_DATA_ROOT : '';
     const services: Services = {
         requester,
         loginService: new RequesterLoginService(requester, siteUrlOverride),
         userService: new RequesterUserService(requester, siteUrlOverride),
-        gameDataService: new RequesterGameDataService(requester)
+        gameDataService: new RequesterGameDataService(requester, dataRootUrl)
     };
 
     @Component

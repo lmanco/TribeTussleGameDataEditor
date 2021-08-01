@@ -17,6 +17,7 @@ namespace TribeTussleGameDataEditor.API.DAL.Repositories
         void Update(long userId, GameData gameData, string oldName);
         void DeleteByUserIdAndName(long userId, string name);
         bool GameDataFileExists(long userId, string name);
+        byte[] GetGameFileContents(long userId, string name, out string fileExtension);
     }
 
     public class GameDataRepository : IGameDataRepository
@@ -25,14 +26,16 @@ namespace TribeTussleGameDataEditor.API.DAL.Repositories
         private readonly IYAMLReader<GameDataData> _yamlReader;
         private readonly IYAMLWriter<GameDataData> _yamlWriter;
         private readonly IFileWriter _fileWriter;
+        private readonly IFileReader _fileReader;
         private readonly string _gameDataDir;
 
         public GameDataRepository(IYAMLReader<GameDataData> yamlReader, IYAMLWriter<GameDataData> yamlWriter,
-            IFileWriter fileWriter, IConfiguration configuration)
+            IFileWriter fileWriter, IFileReader fileReader, IConfiguration configuration)
         {
             _yamlReader = yamlReader;
             _yamlWriter = yamlWriter;
             _fileWriter = fileWriter;
+            _fileReader = fileReader;
             _gameDataDir = configuration["FileDataDirectory"] ?? DefaultGameDataDir;
         }
 
@@ -90,6 +93,15 @@ namespace TribeTussleGameDataEditor.API.DAL.Repositories
         public bool GameDataFileExists(long userId, string name)
         {
             return _yamlReader.YAMLFileExists(GetGameDataFile(userId, name));
+        }
+
+        public byte[] GetGameFileContents(long userId, string name, out string fileName)
+        {
+            string fullFileName = GetGameDataFile(userId, name);
+            if (!_yamlReader.YAMLFileExists(fullFileName))
+                throw new FileNotFoundException();
+            fileName = Path.GetFileName(fullFileName);
+            return _fileReader.ReadAllBytes(fullFileName);
         }
 
         private string GetGameDataFile(long userId, string name)
