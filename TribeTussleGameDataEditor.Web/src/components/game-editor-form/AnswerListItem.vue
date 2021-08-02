@@ -35,7 +35,7 @@
                 </b-form-input>
             </b-col>
         </b-row>
-        <b-row align-v="center" v-else>
+        <b-row align-v="center" v-else-if="isTablet">
             <b-col class="col-sm-auto pr-0" cols="1">
                 <span class="drag-handle">
                     <b-icon-grip-horizontal></b-icon-grip-horizontal>
@@ -64,6 +64,41 @@
                 </b-form-input>
             </b-col>
         </b-row>
+        <b-container align-v="center" class="pl-0 pr-0" v-else>
+            <b-row>
+                <b-col class="mb-2">
+                    {{ index + 1 }}
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col class="pl-0 pr-0">
+                    <b-form-input id="form-input-text"
+                                  v-model="answer.text"
+                                  @input="$emit('roundChanged')"
+                                  class="w-100 mb-2"
+                                  required
+                                  placeholder="Enter text">
+                    </b-form-input>
+                    <b-form-input id="form-input-score"
+                                  v-model="answer.value"
+                                  @input="$emit('roundChanged')"
+                                  type="number"
+                                  placeholder="0"
+                                  class="w-100 mb-3"
+                                  max="100"
+                                  required>
+                    </b-form-input>
+                </b-col>
+            </b-row>
+            <b-row class="pr-3">
+                <b-col class="col-sm-auto pr-0">
+                    <span class="drag-handle">
+                        <b-icon-grip-horizontal></b-icon-grip-horizontal>
+                    </span>
+                    <b-icon-x class="ml-3"></b-icon-x>
+                </b-col>
+            </b-row>
+        </b-container>
     </li>
 </template>
 

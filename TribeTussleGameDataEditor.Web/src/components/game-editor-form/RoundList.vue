@@ -25,7 +25,7 @@
             <draggable v-else class="row ml-0 mr-0" v-model="rounds" handle=".drag-handle" :move="roundMoved" @change="roundDropped">
                 <b-col :class="{ 'list-group': true, 'first-round-list-item-fm': index === 0,
                        'last-round-list-item-fm': index === rounds.length -1,
-                       'mr-0': true, 'pl-0': true, 'pr-0': true }"
+                       'mr-0': true, 'pl-0': true, 'pr-0': true, 'w-25': isMobile }"
                        v-for="(round, index) in rounds" :key="round.id">
                     <round-list-item :round="round" :index="index" :active="round.id === activeRoundId" 
                                      :forFastMoneyQuestionList="true"

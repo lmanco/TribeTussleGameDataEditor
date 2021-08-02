@@ -52,7 +52,8 @@
         private activeHover: boolean = false;
 
         public toggleHover(): void {
-            this.activeHover = !this.activeHover;
+            if ((this as any).mqOrdinal >= (this as any).mqOrdinals.notebook)
+                this.activeHover = !this.activeHover;
         }
 
         public setActiveRound() {

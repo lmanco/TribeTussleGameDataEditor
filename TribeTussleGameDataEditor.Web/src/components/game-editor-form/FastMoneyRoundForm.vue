@@ -23,7 +23,8 @@
                              :answers="activeQuestion.answers" :addAnswer="addAnswerToRound" :updateAnswers="updateActiveRoundAnswers" />
             </div>
             <div v-else>
-                <round-list :initRounds="questions" :updateActiveRound="updateActiveQuestion" />
+                <round-list :initRounds="questions" :updateActiveRound="updateActiveQuestion" :isFastMoneyQuestionList="true"
+                            :updateFullList="updateOrderedQuestions" :initSelectedId="activeQuestion.id"/>
                 <b-form-group id="form-group-prompt"
                               class="mb-2"
                               label-for="form-input-prompt">
