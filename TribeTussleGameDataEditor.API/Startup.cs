@@ -113,6 +113,8 @@ namespace TribeTussleGameDataEditor
                 endpoints.MapFallbackToFile("/index.html");
             });
 
+            if (env.IsProduction())
+                MigrateDb(app.ApplicationServices);
             InitDb(app.ApplicationServices);
         }
 
@@ -141,6 +143,13 @@ namespace TribeTussleGameDataEditor
                 }
             }
             return Action;
+        }
+
+        private void MigrateDb(IServiceProvider serviceProvider)
+        {
+            using var serviceScope = serviceProvider.CreateScope();
+            using var dbContext = (ApplicationDbContext)serviceScope.ServiceProvider.GetService(typeof(ApplicationDbContext));
+            dbContext.Database.Migrate();
         }
 
         private void InitDb(IServiceProvider serviceProvider)
