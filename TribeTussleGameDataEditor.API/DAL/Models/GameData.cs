@@ -68,7 +68,7 @@ namespace TribeTussleGameDataEditor.API.DAL.Models
             int questionNumber = 1;
             ErrorMessage = string.Join('\n', questions.Aggregate(new List<string>(), (errorMessages, question) =>
             {
-                if (string.IsNullOrEmpty(question.Prompt))
+                if (question.Prompt == null)
                     errorMessages.Add($"A prompt for {QuestionWord} {questionNumber} is required.");
                 if (question.Answers == null || question.Answers.Length < 1)
                     errorMessages.Add($"At least one answer is required for {QuestionWord} {questionNumber}.");
@@ -77,7 +77,7 @@ namespace TribeTussleGameDataEditor.API.DAL.Models
                 int answerNum = 1;
                 errorMessages.AddRange(question.Answers.Aggregate(new List<string>(), (answerErrors, answer) =>
                 {
-                    if (string.IsNullOrEmpty(answer.Text))
+                    if (answer.Text == null)
                         errorMessages.Add($"Answer text is required for answer {answerNum} in {QuestionWord} {questionNumber}.");
                     return answerErrors;
                 }));
